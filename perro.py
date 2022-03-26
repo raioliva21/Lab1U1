@@ -1,87 +1,95 @@
-
-#from _typeshed import Self
-
-
-#permite especificar el tiempo (horas) con un umero entero -> ¿timepo de que?
-#devuelve la hora de en que bebio agua el perro  -> ingresa hora a sacar a pasear
-#verdadero (True) indicara si el perro necesita salir a pasear  -> ¿necesita el perro orinar?
+#!/usr/bin/env python3
 
 class perro():
+    
+    def __init__(self, nombre, hrs_dsp_beber, reloj, pasear):
+        self.nombre = nombre
+        self.hrs_dsp_beber = hrs_dsp_beber
+        self.reloj = reloj
+        self.pasear = pasear
+    
+    # permite especificar el tiempo (horas) con un numero
+    # recibe un int de argumento 
+    def set_tomar_agua(self, tomar_agua):
 
-    def __init__(self):
-        self.pasear = None
-        self.tomar_agua = None
-        #self.hrs_para_pasear = None
+        # perro toma agua solo bajo la siguiente condicion
+        if tomar_agua == 1 and self.pasear is not True:
+            self.hrs_dsp_beber = 0
+            print(f"{self.nombre} bebio agua a las {self.reloj} hrs.")
 
-
-    def set_tomar_agua(self, perro_toma_agua, hrs_para_pasear):
-        
-        # si perro toma agua
-        if perro_toma_agua is True:
-            # cuenta para que perro pueda pasear : '0' = ok
-            hrs_para_pasear = -4
+        # circunstancias en que perro no toma agua
         else:
-            hrs_para_pasear = hrs_para_pasear + 1
+            # si perro salio a pasear, tal que no debe tomar agua
+            if tomar_agua == 1 and self.pasear is True:
+                print(f"Accion no disponible, {self.nombre} aun esta paseando tal que no debe tomar agua.")
+                # se asigna booliano 'False' para accion en siguiente ciclo
+                self.pasear = False
+            # si perro no toma agua ni pasea 
+            else:
+                pass
+
+            """accion general para ambos casos anteriores """
+            # se aumenta una hora desde ultima vez que perro bebio agua
+            self.hrs_dsp_beber += 1
+            print(f"{self.nombre} bebio agua hace {self.hrs_dsp_beber} hora(s).")
+
+    # retorna hrs (int) pasadas desde que perro bebio agua y si perro esta paseando (T or F)
+    def get_hora_toma_agua(self):
+        return self.hrs_dsp_beber, self.pasear
+
+    # indicara si el perro necesita salir a pasear
+    def caminar(self, solicitud):
+        
+        # dirigue a ultimo caso de metodo, tal que indica ultima vez que perro bebio
+        self.set_tomar_agua(0)
+
+        if self.hrs_dsp_beber < 4 and solicitud is False:
             pass
-        
-        #print("las horas para salir a pasear son ", hrs_para_pasear* -1)
-        return hrs_para_pasear
-
-        
-    #devuelve la hora de en que bebio agua el perro
-    def get_hora_toma_agua(self, hrs_para_pasear):
-
-        print(f"El perro bebio agua hace {hrs_para_pasear + 4} hrs.")
-
-        return hrs_para_pasear
-
-    #verdadero (True) indicara si el perro necesita salir a pasear
-    def caminar(self, hrs_para_pasear):
-
-        print("las horas para salir a pasear son ", hrs_para_pasear)
-
-        if hrs_para_pasear < 0:
-            self.pasear is False
-            hrs_para_pasear += 1
-            print("Perro no ha superado las 4 hrs despues de tomar agua. No saldra a pasear")
+        elif self.hrs_dsp_beber < 4 and solicitud is True:
+            print(f"Accion no disponible, {self.nombre} bebio agua hace menos de 4 hrs.")
+        elif self.hrs_dsp_beber >= 4 and solicitud is False:
+            print(f"Advertencia, {self.nombre} ya debe salir a pasear.")
         else:
-            self.pasear is True
-            print("Perro sale a pasear")
-            #hrs_para_pasear = -4
-
-        return hrs_para_pasear
+            print(f"{self.nombre} sale a pasear.")
+            self.pasear = True
 
 
+nombre_perro = input("Bienvenid@, por favor ingrese nombre de perro.\n")
+reloj = 0
+hrs_dsp_beber = 4
+caminar = None
 n = None
-horas_para_pasear = 0
 
 while n != 0:
 
-    print("Menu")
-    print("Marque <1> si perro toma agua")
-    print("Marque <2> si perro sale a pasear")
-    print("Marque <3> si perro no hace nada")
-    print("Marque <0> para salir de programa.")
-    n = int(input())
+    print(f"\nEl reloj marca las {reloj} (hrs).")
 
-    Perro = perro()
+    print("Menu")
+    print(f"Marque <1> si {nombre_perro} toma agua")
+    print(f"Marque <2> si {nombre_perro} sale a pasear")
+    print(f"Marque <3> si {nombre_perro} no hace ninguna de las acciones anteriores")
+    print("Marque <0> para salir de menu.")
+    n = int(input(">"))
+    
+    Perro = perro(nombre_perro, hrs_dsp_beber, reloj, caminar)
 
     # perro toma agua
     if n == 1:
-        # se drigue a metodo
-        horas_para_pasear = Perro.set_tomar_agua(True, horas_para_pasear)
-        horas_para_pasear = Perro.get_hora_toma_agua(horas_para_pasear)
+        # 1 = True  tal que se obedece argumento tipo 'int' solicitado en ejercicio
+        tomar_agua = 1
+        Perro.set_tomar_agua(tomar_agua)
     # perro sale a pasear
     elif n == 2:
-        horas_para_pasear = Perro.caminar(horas_para_pasear)
+        Perro.caminar(True)
+    # perro no hace ninguna actividad de las ya mencionadas
+    # tiempo continua avanzando
+    elif n == 3:
+        Perro.caminar(False)
     else:
-        horas_para_pasear = Perro.set_tomar_agua(False, horas_para_pasear)
         pass
+    
+    # se asignan nuevos valores para actualizar atributos en siguiente ciclo
+    hrs_dsp_beber, caminar = Perro.get_hora_toma_agua()
 
-    print(f"quedan {horas_para_pasear * -1} hrs para sacar a pasear a perro")
+    reloj += 1
         
-
-
-
-
-
