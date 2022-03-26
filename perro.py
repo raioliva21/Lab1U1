@@ -92,4 +92,7 @@ while n != 0:
     hrs_dsp_beber, caminar = Perro.get_hora_toma_agua()
 
     reloj += 1
+    # si se cumple ciclo de 24 hrs
+    if reloj == 24:
+        reloj = 0
         
